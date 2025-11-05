@@ -50,7 +50,7 @@ src/
 └─ app.js                  # configura express: middlewares + rutas
 server.js                  # entry point: dotenv.config(), connectDB(), app.listen()
 ---
-
+```
 ## ⚙️ Instalación y configuración
 
 ### 1️⃣ Clonar el repositorio
