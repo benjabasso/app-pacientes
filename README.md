@@ -25,23 +25,24 @@ Permite crear, editar, eliminar y listar pacientes con una arquitectura escalabl
 
 ---
 
-## 📂 Estructura del proyecto
-app-pacientes/
+### 🗂️ Mapa de archivos
+
+```bash
+src/
+├─ config/
+│  └─ db.js                # Conexión a MongoDB (usa process.env.MONGO_URI)
+├─ controllers/
+│  ├─ authController.js    # register, login (bcrypt + jwt)
+│  └─ patientController.js # get, getById, create, update, delete
+├─ middlewares/
+│  ├─ authMiddleware.js    # valida JWT y setea req.user
+│  ├─ errorMiddleware.js   # handler global de errores (AppError)
+│  └─ notFound.js          # 404 handler
+├─ models/
+│  ├─ User.js              # esquema User (email, password)
+│  └─ Patient.js           # esquema Patient (name, age, dni, email...)
+├─ routes/
 │
-├── backend/
-│ ├── src/
-│ │ ├── config/
-│ │ │ └── db.js
-│ │ ├── controllers/
-│ │ ├── middleware/
-│ │ ├── models/
-│ │ ├── routes/
-│ │ ├── app.js
-│ │ └── server.js
-│ ├── .env
-│ └── package.json
-│
-└── frontend/ (por crear con React)
 
 ---
 
