@@ -42,8 +42,13 @@ src/
 │  ├─ User.js              # esquema User (email, password)
 │  └─ Patient.js           # esquema Patient (name, age, dni, email...)
 ├─ routes/
-│
-
+│  ├─ authRoutes.js        # /api/auth -> register, login
+│  └─ patientRoutes.js     # /api/patients -> CRUD (usa authMiddleware)
+├─ utils/
+│  ├─ AppError.js          # clase de error personalizada
+│  └─ catchAsync.js        # wrapper async para controladores
+└─ app.js                  # configura express: middlewares + rutas
+server.js                  # entry point: dotenv.config(), connectDB(), app.listen()
 ---
 
 ## ⚙️ Instalación y configuración
