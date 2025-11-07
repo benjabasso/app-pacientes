@@ -1,13 +1,29 @@
-// User model for MongoDB
-import mongoose from 'mongoose';
+// User model for PostgreSQL using Sequelize
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/db.js';
 
-const userSchema = new mongoose.Schema({
+const User = sequelize.define('User', {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+    },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: {
+            isEmail: true,
+        },
+    },
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+}, {
+    tableName: 'users',
+    timestamps: true,
+});
 
-    email: {type: String, required: true, unique: true},
-    password: {type: String, required: true}
-
-}, 
-    {versionKey: false}
-);
-
-export default mongoose.model("User", userSchema);
+export default User;
+    

@@ -20,9 +20,5 @@ app.use(notFound);
 // Error handling middleware
 app.use(errorHandler);
 
-app.get('/', (req, res) => {
-    res.send('Healthcare Management System API is running');
-});
-
 export default app;
 

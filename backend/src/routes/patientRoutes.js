@@ -1,15 +1,15 @@
 // Routes for patient-related operations
 import { Router } from 'express';
-import { getAllPatients, getPatientById, addPatient, updatePatient, deletePatient } from '../controllers/patientController.js';
-import authMiddleware from '../middlewares/authMiddleware.js';
+import { getAllPatients, getPatientById, createPatient, updatePatient, deletePatient } from '../controllers/patientController.js';
+import { protect } from '../middlewares/authMiddleware.js';
 
 const router = Router();
 
-router.use(authMiddleware); // Protect all patient routes
+router.use(protect); // Protect all patient routes
 
 router.get('/', getAllPatients); 
 router.get('/:id', getPatientById);
-router.post('/', addPatient);
+router.post('/', createPatient);
 router.patch('/:id', updatePatient);
 router.delete('/:id', deletePatient);
 

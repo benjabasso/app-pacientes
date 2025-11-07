@@ -1,75 +1,55 @@
 // Controller for patient operations
 
-import Patient from '../models/Patient.js';
+import { where } from 'sequelize';
+import { Patient } from '../models/index.js';
 import AppError from '../utils/AppError.js';
 import catchAsync from '../utils/catchAsync.js';
 
-// Get all patients
-
 export const getAllPatients = catchAsync(async (req, res, next) => {
-    const patients = await Patient.find();
-    res.json(patients);
+    const patients = await Patient.findAll({ where: {doctorId: req.user.id} });
+    res.status(200).json({
+        status: 'success',
+        data: patients
+    });
 });
-
-// Get patient by ID
 
 export const getPatientById = catchAsync(async (req, res, next) => {
-    const id = req.params.id;
-    const patient = await Patient.findById(id);
-    if (!patient) {
-        throw new AppError('Patient not found', 404);
-    }
-    res.json(patient);
+    const patient = await Patient.findOne({ where: { id: req.params.id, doctorId: req.user.id } });
+    if (!patient) return next(new AppError('Patient not found', 404));
+
+    res.status(200).json({
+        status: 'success',
+        data: patient
+    });
 });
 
-// Add a new patient
-
-export const addPatient = catchAsync(async (req, res, next) => {
-    const { name, age, history, dni, social_security, email } = req.body;
-
-    if (!name || !age || !history || !dni || !social_security || !email) {
-        throw new AppError('All fields are required', 400);
-    }
-
-    if (age < 0) {
-        throw new AppError('Age must be non-negative', 400);
-    }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        throw new AppError('Invalid email format', 400);
-    }
-
-    const existingPatient = await Patient.findOne({ $or: [{ dni }, { email }] });
-    if (existingPatient) {
-        throw new AppError('Patient already exists with same dni or email', 400);
-    }
-
-    const newPatient = await Patient.create({ name, age, history, dni, social_security, email });
-    res.status(201).json(newPatient);
+export const createPatient = catchAsync(async (req, res, next) => {
+    const payload = { ...req.body, doctorId: req.user.id };
+    const newPatient = await Patient.create(payload);
+    res.status(201).json({
+        status: 'success',
+        data: newPatient
+    });
 });
-
-// Update a patient
 
 export const updatePatient = catchAsync(async (req, res, next) => {
-    const id = req.params.id;
-    const updates = req.body;
-
-    const updatedPatient = await Patient.findByIdAndUpdate(id, updates, { new: true });
-    if (!updatedPatient) {
-        throw new AppError('Patient not found', 404);
-    }
-    res.json(updatedPatient);
+    const patient = await Patient.findOne({ where: { id: req.params.id, doctorId: req.user.id } });
+    if (!patient) return next(new AppError('Patient not found', 404));
+    
+    await patient.update(req.body);
+    res.status(200).json({
+        status: 'success',
+        data: patient
+    });
 });
-
-// Delete a patient
 
 export const deletePatient = catchAsync(async (req, res, next) => {
-    const id = req.params.id;
+    const patient = await Patient.findOne({ where: { id: req.params.id, doctorId: req.user.id } });
+    if (!patient) return next(new AppError('Patient not found', 404));
 
-    const deletedPatient = await Patient.findByIdAndDelete(id);
-    if (!deletedPatient) {
-        throw new AppError('Patient not found', 404);
-    }
-    res.json(deletedPatient);
+    await patient.destroy();
+    res.status(204).json({
+        status: 'success',
+        data: null
+    });
 });
-
